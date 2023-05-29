@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:homework_todo/config/constants.dart';
 import 'package:homework_todo/features/todo_list/presentation/bloc/todo_list_bloc.dart';
 
 import 'config/routes.dart';
@@ -30,10 +31,15 @@ class MyApp extends StatelessWidget {
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
               textTheme: TextTheme(
-                titleMedium: GoogleFonts.plusJakartaSans(
+                titleMedium: GoogleFonts.mPlusRounded1c(
                   fontSize: 20.sp,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                  color: black,
+                ),
+                bodyLarge: GoogleFonts.mPlusRounded1c(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w500,
+                  color: black,
                 ),
               ),
             ),

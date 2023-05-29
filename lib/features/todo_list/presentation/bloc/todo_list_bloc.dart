@@ -1,22 +1,25 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:homework_todo/config/enums.dart';
 import 'package:homework_todo/features/todo_list/data/models/task_model.dart';
 
 part 'todo_list_event.dart';
 part 'todo_list_state.dart';
 
 class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
-  TodoListBloc()
-      : super(TodoListState(taskList: [], taskDates: [
-          DateTime.parse('2023-01-01'),
-          DateTime.parse('2023-01-02'),
-          DateTime.parse('2023-01-03'),
-        ])) {
+  TodoListBloc() : super(TodoListState(taskList: const [], selectedDate: DateTime.now())) {
     on<TodoListEvent>(_loadTaskList);
+    on<ChangeCalendarDateEvent>(_changeCalendarDate);
   }
 
-  _loadTaskList(event, emit) {
+  _loadTaskList(TodoListEvent event, Emitter<TodoListState> emit) {
     emit(state.copyWith(taskList: json.map((e) => TaskModel.fromJson(e)).toList()));
+  }
+
+  _changeCalendarDate(ChangeCalendarDateEvent event, Emitter<TodoListState> emit) {
+    emit(state.copyWith(selectedDate: event.selectedDate));
   }
 }
 

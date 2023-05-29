@@ -16,14 +16,12 @@ class TaskModel extends TaskEntity {
     required super.id,
     required super.title,
     required super.description,
-    required super.isDone,
     required super.date,
   });
 
   factory TaskModel.fromJson(Map<String, dynamic> json) => TaskModel(
         id: json["id"],
         title: json["title"],
-        isDone: json["isDone"],
         description: json["description"],
         date: DateTime.parse(json["date"]),
       );
@@ -31,8 +29,7 @@ class TaskModel extends TaskEntity {
   Map<String, dynamic> toJson() => {
         "id": id,
         "title": title,
-        "isDone": isDone,
         "description": description,
-        "date": date,
+        "date": description,
       };
 }

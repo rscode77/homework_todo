@@ -8,3 +8,12 @@ abstract class TodoListEvent extends Equatable {
 }
 
 class LoadTodoListEvent extends TodoListEvent {}
+
+class ChangeCalendarDateEvent extends TodoListEvent {
+  final DateTime selectedDate;
+
+  const ChangeCalendarDateEvent({required this.selectedDate});
+
+  @override
+  List<Object> get props => [selectedDate];
+}

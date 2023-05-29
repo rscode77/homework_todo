@@ -2,23 +2,24 @@ part of 'todo_list_bloc.dart';
 
 class TodoListState extends Equatable {
   final List<TaskModel> taskList;
-  final List<DateTime> taskDates;
+  final DateTime selectedDate;
 
   const TodoListState({
     required this.taskList,
-    required this.taskDates,
+    required this.selectedDate,
   });
 
   @override
-  List<Object> get props => [taskList];
+  List<Object> get props => [taskList, selectedDate];
 
   TodoListState copyWith({
     List<TaskModel>? taskList,
-    List<DateTime>? taskDates,
+    DateTime? selectedDate,
+    TaskStatus? taskStatus,
   }) {
     return TodoListState(
       taskList: taskList ?? this.taskList,
-      taskDates: taskDates ?? this.taskDates,
+      selectedDate: selectedDate ?? this.selectedDate,
     );
   }
 }
