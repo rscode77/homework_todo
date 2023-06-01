@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:homework_todo/features/todo_list/presentation/widgets/shadow_line_widget.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../config/constants.dart';
+import '../bloc/todo_list_bloc.dart';
 
-class CalendarListDateWidget extends StatelessWidget {
+class CalendarListDateWidget extends StatefulWidget {
   const CalendarListDateWidget({
     Key? key,
     required this.date,
@@ -16,6 +19,16 @@ class CalendarListDateWidget extends StatelessWidget {
   final bool selected;
 
   @override
+  State<CalendarListDateWidget> createState() => _CalendarListDateWidgetState();
+}
+
+class _CalendarListDateWidgetState extends State<CalendarListDateWidget> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var font = Theme.of(context).textTheme;
     return SizedBox(
@@ -24,35 +37,31 @@ class CalendarListDateWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text(
-            DateFormat('EEE').format(date),
-            style: selected
+            DateFormat('EEE').format(widget.date),
+            style: widget.selected
                 ? font.bodyLarge!.copyWith(
                     color: blue,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w500,
                   )
                 : font.bodyLarge!.copyWith(color: gray),
           ),
           Gap(10.h),
-          Container(
-            color: lightGray,
-            height: 0.8,
-            width: double.infinity,
-          ),
+          const ShadowLineWidget(),
           Gap(7.h),
           Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: selected ? blue : Colors.transparent,
+              color: widget.selected ? blue : Colors.transparent,
             ),
-            height: 35.h,
-            width: 35.w,
+            height: 30.h,
+            width: 30.w,
             child: Center(
               child: Text(
-                date.day.toString(),
-                style: selected
+                widget.date.day.toString(),
+                style: widget.selected
                     ? font.bodyLarge!.copyWith(
                         color: Colors.white,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w500,
                       )
                     : font.bodyLarge,
               ),

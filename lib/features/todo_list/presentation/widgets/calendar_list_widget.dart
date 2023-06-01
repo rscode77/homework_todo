@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:homework_todo/config/constants.dart';
 import 'package:homework_todo/features/todo_list/presentation/bloc/todo_list_bloc.dart';
 
 import 'calendar_list_date.dart';
@@ -14,7 +15,7 @@ class CalendarListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var dates = getTaskDates();
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20.w),
+      color: background,
       height: 75.h,
       child: ListView.builder(
         shrinkWrap: true,

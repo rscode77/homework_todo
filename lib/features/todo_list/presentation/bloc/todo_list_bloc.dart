@@ -2,31 +2,112 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+
 import 'package:homework_todo/config/enums.dart';
+import 'package:homework_todo/features/todo_list/data/datasources/database_helper.dart';
 import 'package:homework_todo/features/todo_list/data/models/task_model.dart';
+import 'package:homework_todo/features/todo_list/data/repositories/local_database_repository_impl.dart';
+import 'package:homework_todo/features/todo_list/data/repositories/remote_database_repositoryt_impl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../../config/exceptions.dart';
 
 part 'todo_list_event.dart';
 part 'todo_list_state.dart';
 
 class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
-  TodoListBloc() : super(TodoListState(taskList: const [], selectedDate: DateTime.now())) {
-    on<TodoListEvent>(_loadTaskList);
+  TodoListBloc()
+      : super(TodoListState(
+            taskList: const [],
+            selectedDate: DateTime(
+              DateTime.now().year,
+              DateTime.now().month,
+              DateTime.now().day,
+            ),
+            filter: TaskStatus.all,
+            loading: false,
+            tasksInCalendar: const [],
+            taskOperationStatus: TaskOperationStatus.none)) {
+    on<LoadRemoteTodoListEvent>(_loadRemoteTaskList);
+    on<LoadLocalTodoListEvent>(_loadLocalTaskList);
     on<ChangeCalendarDateEvent>(_changeCalendarDate);
+    on<ChangeTaskFilterEvent>(_changeTaskFilter);
+    on<AddNewTaskEvent>(_addNewTask);
+    on<UpdateTaskEvent>(_updateTaskStatus);
   }
 
-  _loadTaskList(TodoListEvent event, Emitter<TodoListState> emit) {
-    emit(state.copyWith(taskList: json.map((e) => TaskModel.fromJson(e)).toList()));
+  _loadRemoteTaskList(LoadRemoteTodoListEvent event, Emitter<TodoListState> emit) async {
+    emit(state.copyWith(loading: true));
+
+    await Future.delayed(const Duration(seconds: 1));
+
+    try {
+      var tasks = await RemoteDatabaseRepositoryImpl().getAllTasks(userId: event.userId);
+
+      //copy to local database
+      await DatabaseHelper().initDatabase();
+      await DatabaseHelper().clearTable();
+
+      for (var task in tasks) {
+        await DatabaseHelper().insertTask(task);
+      }
+
+      emit(state.copyWith(taskList: tasks, loading: false));
+    } on ConnectionFaild {
+      emit(state.copyWith(loading: false, taskOperationStatus: TaskOperationStatus.faild));
+    } finally {
+      emit(state.copyWith(taskOperationStatus: TaskOperationStatus.faild));
+    }
+  }
+
+  _loadLocalTaskList(LoadLocalTodoListEvent event, Emitter<TodoListState> emit) async {
+    emit(state.copyWith(loading: true));
+
+    await Future.delayed(const Duration(seconds: 1));
+
+    await DatabaseHelper().initDatabase();
+    var tasks = await LocalDatabaseRepositoryImpl().getAllTasks();
+
+    emit(state.copyWith(taskList: tasks, loading: false));
   }
 
   _changeCalendarDate(ChangeCalendarDateEvent event, Emitter<TodoListState> emit) {
-    emit(state.copyWith(selectedDate: event.selectedDate));
+    emit(state.copyWith(selectedDate: DateTime(event.selectedDate.year, event.selectedDate.month, event.selectedDate.day)));
+  }
+
+  _changeTaskFilter(ChangeTaskFilterEvent event, Emitter<TodoListState> emit) {
+    emit(state.copyWith(filter: event.filter));
+  }
+
+  _addNewTask(AddNewTaskEvent event, Emitter<TodoListState> emit) async {
+    try {
+      await RemoteDatabaseRepositoryImpl().addTask(task: event.task);
+      await DatabaseHelper().insertTask(event.task);
+
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      int? userId = prefs.getInt('userId');
+      add(LoadRemoteTodoListEvent(userId: userId!));
+    } on ConnectionFaild {
+      emit(state.copyWith(taskOperationStatus: TaskOperationStatus.faild));
+    } finally {
+      emit(state.copyWith(taskOperationStatus: TaskOperationStatus.none));
+    }
+  }
+
+  _updateTaskStatus(UpdateTaskEvent event, Emitter<TodoListState> emit) async {
+    try {
+      await RemoteDatabaseRepositoryImpl().updateTaskStatus(status: event.taskStatus.toLowerCase(), taskId: event.taskId);
+      await DatabaseHelper().updateTask(event.taskId, event.taskStatus);
+
+      List<TaskModel> tasks = List.from(state.taskList);
+      tasks.firstWhere((element) => element.id == event.taskId).status = event.taskStatus.toLowerCase();
+
+      emit(state.copyWith(taskList: []));
+      emit(state.copyWith(taskList: tasks));
+    } on ConnectionFaild {
+      emit(state.copyWith(taskOperationStatus: TaskOperationStatus.faild));
+    } finally {
+      emit(state.copyWith(taskOperationStatus: TaskOperationStatus.none));
+    }
   }
 }
-
-var json = [
-  {"id": 0, "title": "b48284d6-e3ca-47c5-a815-d1c832e5f5e3", "isDone": true, "description": "4c35c44a-b676-44ea-af86-43368f285ec6", "date": "2023-01-01"},
-  {"id": 1, "title": "ab77e766-d12b-4325-b105-e0fc0359da9a", "isDone": false, "description": "a686b069-dd34-4a01-be39-8f203f94cdf9", "date": "2023-01-02"},
-  {"id": 2, "title": "e982524a-48e8-4605-83a9-5bb666a4682d", "isDone": false, "description": "b788e125-156f-4e53-923b-ce80c0c49c11", "date": "2023-01-03"},
-  {"id": 3, "title": "0a150861-b2f8-4a48-a0ff-99df06737fd0", "isDone": true, "description": "6d723fe4-de92-4086-a0ac-d89142cf40b8", "date": "2023-01-03"},
-  {"id": 4, "title": "80119a39-bf63-4974-83a4-989c8a173fd8", "isDone": false, "description": "a68fa756-fd11-4c0b-b7eb-fbecbb72bcc5", "date": "2023-01-03"}
-];

@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:homework_todo/config/constants.dart';
+import 'package:homework_todo/features/network_controller/bloc/network_bloc.dart';
 import 'package:homework_todo/features/todo_list/presentation/bloc/todo_list_bloc.dart';
+import 'package:homework_todo/features/user_authentication/presentation/bloc/user_authentication_bloc.dart';
 
 import 'config/routes.dart';
 
 void main() {
   runApp(const MyApp());
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    systemNavigationBarColor: background,
+    systemNavigationBarDividerColor: background,
+    systemNavigationBarIconBrightness: Brightness.dark,
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -22,7 +30,13 @@ class MyApp extends StatelessWidget {
         return MultiBlocProvider(
           providers: [
             BlocProvider(
-              create: (context) => TodoListBloc()..add(LoadTodoListEvent()),
+              create: (context) => UserAuthenticationBloc()..add(const VerifyUserEvent()),
+            ),
+            BlocProvider(
+              create: (context) => TodoListBloc(),
+            ),
+            BlocProvider(
+              create: (context) => NetworkBloc()..add(NetworkObserve()),
             ),
           ],
           child: MaterialApp.router(
@@ -30,15 +44,61 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
+              hoverColor: Colors.transparent,
               textTheme: TextTheme(
-                titleMedium: GoogleFonts.mPlusRounded1c(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w500,
+                displayLarge: GoogleFonts.roboto(
+                  fontSize: 30.sp,
+                  fontWeight: FontWeight.w600,
                   color: black,
                 ),
-                bodyLarge: GoogleFonts.mPlusRounded1c(
+                displayMedium: GoogleFonts.roboto(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w400,
+                  color: black,
+                ),
+                titleLarge: GoogleFonts.roboto(
+                  fontSize: 25.sp,
+                  fontWeight: FontWeight.w600,
+                  color: black,
+                ),
+                titleMedium: GoogleFonts.roboto(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w400,
+                  color: black,
+                ),
+                titleSmall: GoogleFonts.roboto(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w400,
+                  color: black,
+                ),
+                bodyLarge: GoogleFonts.roboto(
                   fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w400,
+                  color: black,
+                ),
+                bodySmall: GoogleFonts.roboto(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w400,
+                  color: black,
+                ),
+                headlineLarge: GoogleFonts.roboto(
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w400,
+                  color: black,
+                ),
+                headlineMedium: GoogleFonts.roboto(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w400,
+                  color: black,
+                ),
+                headlineSmall: GoogleFonts.roboto(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w400,
+                  color: black,
+                ),
+                displaySmall: GoogleFonts.roboto(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w400,
                   color: black,
                 ),
               ),

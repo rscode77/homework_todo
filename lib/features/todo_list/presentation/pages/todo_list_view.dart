@@ -2,11 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
-import 'package:homework_todo/features/todo_list/presentation/bloc/todo_list_bloc.dart';
+import 'package:homework_todo/config/constants.dart';
 
+import '../../../../config/enums.dart';
+import '../../../network_controller/bloc/network_bloc.dart';
+import '../../../user_authentication/presentation/bloc/user_authentication_bloc.dart';
+import '../bloc/todo_list_bloc.dart';
 import '../widgets/calendar_list_widget.dart';
+import '../widgets/filter_list_widget.dart';
+
 import '../widgets/todo_list_header_widget.dart';
 import '../widgets/todo_list_widget.dart';
+import 'add_new_task_view.dart';
 
 class TodoListView extends StatefulWidget {
   const TodoListView({super.key});
@@ -17,25 +24,64 @@ class TodoListView extends StatefulWidget {
 
 class _TodoListViewState extends State<TodoListView> {
   @override
+  void initState() {
+    _chooseDatabase();
+    super.initState();
+  }
+
+  void _chooseDatabase() {
+    var userId = context.read<UserAuthenticationBloc>().state.userId;
+    var networkStatus = context.read<NetworkBloc>().state.networkStatus;
+
+    if (userId != null && networkStatus == NetworkStatus.connected) {
+      context.read<TodoListBloc>().add(LoadRemoteTodoListEvent(userId: userId));
+    } else {
+      context.read<TodoListBloc>().add(LoadLocalTodoListEvent());
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: background,
       body: SafeArea(
-        child: Column(
+        child: Stack(
           children: [
-            Gap(30.h),
-            const TodoListHeaderWidget(),
-            Gap(20.h),
-            BlocBuilder<TodoListBloc, TodoListState>(
-              builder: (context, todoState) {
-                return Column(
-                  children: [
-                    Gap(20.h),
-                    const CalendarListWidget(),
-                    TodoListWidget(
-                      taskList: todoState.taskList,
-                    ),
-                  ],
-                );
+            Column(
+              children: [
+                Gap(30.h),
+                const TodoListHeaderWidget(),
+                Gap(25.h),
+                const CalendarListWidget(),
+                Gap(5.h),
+                const FilterListWidget(),
+                Gap(10.h),
+                const Expanded(child: TodoListWidget()),
+              ],
+            ),
+            BlocBuilder<NetworkBloc, NetworkState>(
+              builder: (context, state) {
+                return state.networkStatus == NetworkStatus.connected
+                    ? Positioned(
+                        bottom: 25,
+                        right: 25,
+                        child: FloatingActionButton(
+                          backgroundColor: blue,
+                          child: Icon(
+                            Icons.add,
+                            color: white,
+                          ),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return const AddNewTaskView();
+                              },
+                            );
+                          },
+                        ),
+                      )
+                    : Container();
               },
             ),
           ],
