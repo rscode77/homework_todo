@@ -1,16 +1,13 @@
-# homework_todo
+# Task manager
 
-A new Flutter project.
+## Application created for development purposes
 
-## Getting Started
+Task Manager is a mobile application that allows users to effectively manage their tasks and responsibilities.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![My Remote Image](https://rscode.site/app/todoapp/t1.png)
+![My Remote Image](https://rscode.site/app/todoapp/t2.png)
+![My Remote Image](https://rscode.site/app/todoapp/t3.png)
+![My Remote Image](https://rscode.site/app/todoapp/t4.png)
+![My Remote Image](https://rscode.site/app/todoapp/t5.png)
+![My Remote Image](https://rscode.site/app/todoapp/t6.png)
+![My Remote Image](https://rscode.site/app/todoapp/t7.png)
