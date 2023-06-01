@@ -11,6 +11,9 @@ import 'package:homework_todo/features/user_authentication/presentation/bloc/use
 import 'config/routes.dart';
 
 void main() {
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
   runApp(const MyApp());
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     systemNavigationBarColor: background,
@@ -41,7 +44,13 @@ class MyApp extends StatelessWidget {
           ],
           child: MaterialApp.router(
             title: 'Clean main',
+            debugShowCheckedModeBanner: false,
             theme: ThemeData(
+              textSelectionTheme: TextSelectionThemeData(
+                cursorColor: blue,
+                selectionColor: blue.withOpacity(0.5),
+                selectionHandleColor: blue,
+              ),
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
               hoverColor: Colors.transparent,

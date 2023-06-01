@@ -1,5 +1,3 @@
-import 'package:equatable/equatable.dart';
-
 class TaskEntity {
   int id;
   String title;

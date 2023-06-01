@@ -44,7 +44,6 @@ class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
     try {
       var tasks = await RemoteDatabaseRepositoryImpl().getAllTasks(userId: event.userId);
 
-      //copy to local database
       await DatabaseHelper().initDatabase();
       await DatabaseHelper().clearTable();
 

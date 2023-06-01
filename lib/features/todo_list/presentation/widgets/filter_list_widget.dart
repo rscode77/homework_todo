@@ -15,10 +15,10 @@ class FilterListWidget extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20.w),
       padding: EdgeInsets.symmetric(horizontal: 8.w),
-      height: 55.h,
+      height: 60.h,
       decoration: BoxDecoration(
         color: white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(25),
         border: Border.all(color: lightGray.withOpacity(0.8), width: 4),
         boxShadow: [
           BoxShadow(

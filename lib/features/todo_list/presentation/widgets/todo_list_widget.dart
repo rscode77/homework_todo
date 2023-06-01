@@ -23,8 +23,8 @@ class TodoListWidget extends StatelessWidget {
         return state.loading
             ? Center(
                 child: SizedBox(
-                height: 40.h,
-                width: 40.w,
+                height: 45,
+                width: 45,
                 child: CircularProgressIndicator(
                   color: blue,
                   strokeWidth: 3,
@@ -113,7 +113,7 @@ class TodoListWidget extends StatelessWidget {
                                     children: [
                                       Flexible(
                                         child: Text(
-                                          filteredTasks[index].personal == 'false' ? 'Group' : 'Personal',
+                                          taskStatus(filteredTasks, index),
                                           style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: black),
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -137,14 +137,21 @@ class TodoListWidget extends StatelessWidget {
     );
   }
 
+  String taskStatus(List<TaskModel> filteredTasks, int index) {
+    var group = filteredTasks[index].personal == 'false' ? 'Group' : 'Personal';
+    var status = filteredTasks[index].status;
+    status = status[0].toUpperCase() + status.substring(1);
+    return '$status | $group';
+  }
+
   Icon statusIcon(String status) {
     switch (status) {
       case 'completed':
-        return Icon(Icons.check_circle_rounded, color: blue);
+        return Icon(Icons.playlist_add_check_circle_rounded, color: blue);
       case 'pending':
         return Icon(Icons.circle_outlined, color: gray);
       case 'active':
-        return Icon(Icons.circle, color: blue);
+        return Icon(Icons.flag_circle_rounded, color: blue);
       default:
         return Icon(Icons.circle_outlined, color: gray);
     }

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:homework_todo/features/todo_list/presentation/bloc/todo_list_bloc.dart';
 import 'package:homework_todo/features/todo_list/presentation/widgets/add_task_title_widget.dart';
+import 'package:homework_todo/features/todo_list/presentation/widgets/select_date_widget.dart';
 import 'package:homework_todo/features/user_authentication/presentation/bloc/user_authentication_bloc.dart';
 import 'package:intl/intl.dart';
 
@@ -25,26 +26,18 @@ class _AddNewTaskViewState extends State<AddNewTaskView> {
   TextEditingController taskTitleController = TextEditingController();
   TextEditingController taskDescriptionController = TextEditingController();
   TextEditingController taskPrivacyController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      insetPadding: EdgeInsets.zero,
-      elevation: 100,
-      backgroundColor: background,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: SafeArea(
         child: Container(
-          margin: EdgeInsets.symmetric(
-            horizontal: 20.w,
-            vertical: 20.h,
-          ),
-          width: MediaQuery.of(context).size.width / 1.4,
+          height: MediaQuery.of(context).size.height / 1.04,
+          margin: EdgeInsets.symmetric(horizontal: 30.w),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
@@ -52,7 +45,7 @@ class _AddNewTaskViewState extends State<AddNewTaskView> {
                 style: Theme.of(context).textTheme.displayLarge!.copyWith(color: black),
               ),
               Text(
-                DateFormat('EEEEE d-M-y').format(DateTime.now()),
+                DateFormat('EEEEE dd-MM-y').format(DateTime.now()),
                 style: Theme.of(context).textTheme.displayMedium!.copyWith(color: textGray),
               ),
               Gap(20.h),
@@ -60,12 +53,14 @@ class _AddNewTaskViewState extends State<AddNewTaskView> {
                 taskTitleController: taskTitleController,
                 readOnly: false,
               ),
-              Gap(10.h),
+              Gap(15.h),
               AddTaskDescriptionWidget(
                 taskDescriptionController: taskDescriptionController,
                 readOnly: false,
               ),
-              Gap(10.h),
+              Gap(15.h),
+              SelectDateWidget(dateController: dateController),
+              Gap(15.h),
               SetPrivacyWidget(
                 taskPrivacyController: taskPrivacyController,
                 fieldValues: const ['Personal', 'Group'],
@@ -77,6 +72,13 @@ class _AddNewTaskViewState extends State<AddNewTaskView> {
                 text: 'Add task',
                 onPressed: () => _addNewTask(),
               ),
+              Gap(10.h),
+              CustomButtonWidget(
+                color: black,
+                text: 'Back',
+                onPressed: () => Navigator.pop(context),
+              ),
+              Gap(40.h),
             ],
           ),
         ),
@@ -85,6 +87,10 @@ class _AddNewTaskViewState extends State<AddNewTaskView> {
   }
 
   _addNewTask() {
+    String dateString = dateController.text.split(' ')[1];
+    DateTime date = DateFormat('dd-MM-y').parse(dateString);
+    String formattedDate = DateFormat('y-MM-dd').format(date);
+
     if (taskTitleController.text.isEmpty || taskDescriptionController.text.isEmpty) return;
     context.read<TodoListBloc>().add(
           AddNewTaskEvent(
@@ -92,7 +98,7 @@ class _AddNewTaskViewState extends State<AddNewTaskView> {
             id: 0,
             title: taskTitleController.text,
             description: taskDescriptionController.text,
-            date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+            date: formattedDate,
             personal: taskPrivacyController.text == 'Personal' ? 'true' : 'false',
             status: 'pending',
             userId: context.read<UserAuthenticationBloc>().state.userId!,

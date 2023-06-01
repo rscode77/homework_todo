@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:homework_todo/features/todo_list/presentation/pages/add_new_task_view.dart';
 
 import 'package:homework_todo/features/todo_list/presentation/pages/todo_list_view.dart';
 import 'package:homework_todo/features/user_authentication/presentation/pages/user_authentication_view.dart';
@@ -17,6 +18,10 @@ final route = GoRouter(
     GoRoute(
       path: '/register',
       builder: (context, state) => const UserRegistrationView(),
+    ),
+    GoRoute(
+      path: '/addNewTask',
+      builder: (context, state) => const AddNewTaskView(),
     ),
   ],
 );

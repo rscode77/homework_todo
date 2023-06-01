@@ -20,6 +20,7 @@ class RemoteDatabaseRepositoryImpl implements RemoteDatabaseRepository {
         'description': task.description,
         'userID': '${task.userId}',
         'personal': task.personal,
+        'date': task.date,
       },
     );
 

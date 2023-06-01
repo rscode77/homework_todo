@@ -22,6 +22,21 @@ class UserRegistrationView extends StatefulWidget {
 class _UserRegistrationViewState extends State<UserRegistrationView> {
   TextEditingController loginController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
+  late Image bgImage;
+
+  @override
+  void initState() {
+    bgImage = Image.asset("assets/images/bg.png");
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    precacheImage(bgImage.image, context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,54 +55,66 @@ class _UserRegistrationViewState extends State<UserRegistrationView> {
                 scaffoldMessenger(context: context, message: 'User with this name already exists');
               }
             },
-            child: Container(
-              height: MediaQuery.of(context).size.height - 100,
-              margin: EdgeInsets.symmetric(
-                horizontal: 30.w,
-                vertical: 30.h,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height,
+              child: Stack(
                 children: [
-                  Center(
-                    child: Image.asset(
-                      'assets/images/logo.png',
-                      width: 200.w,
-                      height: 200.h,
+                  bgImage,
+                  Container(
+                    height: MediaQuery.of(context).size.height / 1.1,
+                    margin: EdgeInsets.symmetric(
+                      horizontal: 30.w,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Gap(30.h),
+                        Text(
+                          'Register new user',
+                          style: Theme.of(context).textTheme.displayLarge!.copyWith(color: black),
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width / 1.1,
+                          child: Text(
+                            'New user will be added to the primary group, the administrator will assign you to the correct department.',
+                            style: Theme.of(context).textTheme.displayMedium!.copyWith(color: textGray, fontSize: 13.sp),
+                          ),
+                        ),
+                        Gap(25.h),
+                        Padding(
+                          padding: EdgeInsets.only(left: 5.w),
+                          child: Text(
+                            'Registration panel',
+                            style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 16.sp),
+                          ),
+                        ),
+                        Gap(10.h),
+                        CustomTextField(
+                          textController: loginController,
+                          obscureText: false,
+                          hint: 'type login',
+                        ),
+                        Gap(10.h),
+                        CustomTextField(
+                          textController: passwordController,
+                          obscureText: true,
+                          hint: 'type password',
+                        ),
+                        Gap(20.h),
+                        CustomButtonWidget(
+                          text: 'Create account',
+                          color: blue,
+                          onPressed: () => context.read<UserAuthenticationBloc>().add(RegisterUserEvent(
+                                login: loginController.text,
+                                password: passwordController.text,
+                              )),
+                        ),
+                        Gap(10.h),
+                        CustomButtonWidget(onPressed: () => Navigator.pop(context), text: 'Back', color: black),
+                      ],
                     ),
                   ),
-                  Gap(55.h),
-                  Padding(
-                    padding: EdgeInsets.only(left: 5.w),
-                    child: Text(
-                      'Registration panel',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                  ),
-                  Gap(10.h),
-                  CustomTextField(
-                    textController: loginController,
-                    obscureText: false,
-                    hint: 'type login',
-                  ),
-                  Gap(10.h),
-                  CustomTextField(
-                    textController: passwordController,
-                    obscureText: true,
-                    hint: 'type password',
-                  ),
-                  Gap(20.h),
-                  CustomButtonWidget(
-                    text: 'Create account',
-                    color: blue,
-                    onPressed: () => context.read<UserAuthenticationBloc>().add(RegisterUserEvent(
-                          login: loginController.text,
-                          password: passwordController.text,
-                        )),
-                  ),
-                  Gap(10.h),
-                  CustomButtonWidget(onPressed: () => Navigator.pop(context), text: 'Back', color: black),
                 ],
               ),
             ),

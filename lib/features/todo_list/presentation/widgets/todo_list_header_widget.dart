@@ -26,8 +26,6 @@ class TodoListHeaderWidget extends StatelessWidget {
         builder: (context, networkState) {
           return Row(
             children: [
-              Image.asset('assets/images/logo.png', height: 40.h, width: 40.w),
-              Gap(15.w),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,7 +35,7 @@ class TodoListHeaderWidget extends StatelessWidget {
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   Text(
-                    DateFormat('EEEEE d-M-y').format(DateTime.now()),
+                    DateFormat('EEEEE dd-MM-y').format(DateTime.now()),
                     style: Theme.of(context).textTheme.titleSmall!.copyWith(color: textGray, fontWeight: FontWeight.w400),
                   ),
                 ],
@@ -95,7 +93,7 @@ class TodoListHeaderWidget extends StatelessWidget {
                       backgroundColor: blue,
                     ),
                     child: Icon(
-                      Icons.refresh,
+                      Icons.refresh_rounded,
                       color: white,
                       size: 20,
                     ),

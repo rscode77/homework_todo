@@ -21,7 +21,7 @@ class DatabaseHelper {
 
   Future<Database> initDatabase() async {
     return openDatabase(
-      join(await getDatabasesPath(), 'tasks2_db.db'),
+      join(await getDatabasesPath(), 'tasks3_db.db'),
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE tasks (

@@ -38,11 +38,25 @@ class _DataSourceAlertWidget extends State<DataSourceAlertWidget> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Unable to load  network data',
-                  style: Theme.of(context).textTheme.displayMedium!.copyWith(color: black),
+                const Center(
+                  child: Icon(
+                    Icons.wifi_off_rounded,
+                    size: 60,
+                  ),
                 ),
-                Gap(40.h),
+                Gap(20.h),
+                Text(
+                  'Connection failed',
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(color: black),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 40),
+                  child: Text(
+                    'Check your internet connection to load content from remote server.',
+                    style: Theme.of(context).textTheme.titleSmall!.copyWith(color: textGray),
+                  ),
+                ),
+                Gap(30.h),
                 BlocBuilder<NetworkBloc, NetworkState>(
                   builder: (context, state) {
                     return CustomButtonWidget(
@@ -64,7 +78,7 @@ class _DataSourceAlertWidget extends State<DataSourceAlertWidget> {
                       context.read<TodoListBloc>().add(LoadLocalTodoListEvent());
                     },
                     text: 'Load local data',
-                    color: blue),
+                    color: black),
               ],
             ),
           ),

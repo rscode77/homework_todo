@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:homework_todo/config/constants.dart';
 
 import '../../../../config/enums.dart';
@@ -13,7 +14,6 @@ import '../widgets/filter_list_widget.dart';
 
 import '../widgets/todo_list_header_widget.dart';
 import '../widgets/todo_list_widget.dart';
-import 'add_new_task_view.dart';
 
 class TodoListView extends StatefulWidget {
   const TodoListView({super.key});
@@ -71,14 +71,7 @@ class _TodoListViewState extends State<TodoListView> {
                             Icons.add,
                             color: white,
                           ),
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return const AddNewTaskView();
-                              },
-                            );
-                          },
+                          onPressed: () => context.push('/addNewTask'),
                         ),
                       )
                     : Container();

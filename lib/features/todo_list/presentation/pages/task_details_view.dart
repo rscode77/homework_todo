@@ -61,11 +61,11 @@ class _AddNewTaskViewState extends State<TaskDetailsView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Task description',
-                          style: Theme.of(context).textTheme.displayLarge!.copyWith(color: black),
+                          'Task details',
+                          style: Theme.of(context).textTheme.titleLarge!.copyWith(color: black),
                         ),
                         Text(
-                          DateFormat('EEEEE d-M-y').format(DateTime.parse(task.date)),
+                          DateFormat('EEEEE dd-MM-y').format(DateTime.parse(task.date)),
                           style: Theme.of(context).textTheme.displayMedium!.copyWith(color: textGray),
                         ),
                         Gap(20.h),

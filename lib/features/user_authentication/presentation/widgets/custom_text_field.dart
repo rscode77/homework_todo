@@ -27,7 +27,6 @@ class CustomTextField extends StatelessWidget {
       width: double.infinity,
       child: TextField(
         obscureText: obscureText,
-        cursorColor: Colors.blue,
         controller: textController,
         keyboardType: TextInputType.text,
         maxLines: 1,
