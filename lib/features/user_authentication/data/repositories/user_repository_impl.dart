@@ -15,8 +15,9 @@ class UserRepositoryImpl extends UserRepository {
 
   @override
   Future<UserModel> verifyUser() async {
+    var url = Uri.parse('$baseUrl/VerifyUser');
+
     try {
-      var url = Uri.parse('$baseUrl/VerifyUser');
       var response = await http.post(url, body: {'uniqueId': await uuid()});
 
       if (response.statusCode == 200) {
@@ -32,42 +33,51 @@ class UserRepositoryImpl extends UserRepository {
   Future<UserModel> loginUser({required String name, required String password}) async {
     final url = Uri.parse('$baseUrl/LoginUser');
 
-    final response = await http.post(
-      url,
-      body: {'name': name, 'password': password},
-    );
+    try {
+      final response = await http.post(
+        url,
+        body: {'name': name, 'password': password},
+      );
 
-    if (name == '' && password == '') {
-      throw CompleteTheData('Complete the data');
-    }
+      if (name == '' && password == '') {
+        throw CompleteTheData('Complete the data');
+      }
 
-    if (response.statusCode == 200) {
-      return userFromJson(response.body);
-    } else {
-      throw AuthenticationFaild('Failed to verify user');
+      if (response.statusCode == 200) {
+        return userFromJson(response.body);
+      } else {
+        throw AuthenticationFaild('Failed to verify user');
+      }
+    } catch (e) {
+      throw ConnectionFaild('Failed to establish connection');
     }
   }
 
   @override
   Future<ApiResposne> addNewUser({required String name, required String password}) async {
     final url = Uri.parse('$baseUrl/AddNewUser');
-    final response = await http.post(
-      url,
-      body: {'name': name, 'password': password, 'uniqueId': await uuid()},
-    );
 
-    if (name == '' && password == '') {
-      throw CompleteTheData('Complete the data');
-    }
-
-    if (response.statusCode == 200) {
-      return ApiResposne(
-        message: response.body,
-        statusCode: response.statusCode,
+    try {
+      final response = await http.post(
+        url,
+        body: {'name': name, 'password': password, 'uniqueId': await uuid()},
       );
-    } else if (response.statusCode == 469) {
-      throw UserExists('Username exists in database');
-    } else {
+
+      if (name == '' && password == '') {
+        throw CompleteTheData('Complete the data');
+      }
+
+      if (response.statusCode == 200) {
+        return ApiResposne(
+          message: response.body,
+          statusCode: response.statusCode,
+        );
+      } else if (response.statusCode == 469) {
+        throw UserExists('Username exists in database');
+      } else {
+        throw ConnectionFaild('Failed to establish connection');
+      }
+    } catch (e) {
       throw ConnectionFaild('Failed to establish connection');
     }
   }

@@ -13,37 +13,44 @@ class RemoteDatabaseRepositoryImpl implements RemoteDatabaseRepository {
   Future<ApiResposne> addTask({required TaskModel task}) async {
     final url = Uri.parse('$baseUrl/AddNewTask');
 
-    final response = await http.post(
-      url,
-      body: {
-        'title': task.title,
-        'description': task.description,
-        'userID': '${task.userId}',
-        'personal': task.personal,
-        'date': task.date,
-      },
-    );
+    try {
+      final response = await http.post(
+        url,
+        body: {
+          'title': task.title,
+          'description': task.description,
+          'userID': '${task.userId}',
+          'personal': task.personal,
+          'date': task.date,
+        },
+      );
 
-    if (response.statusCode != 200) {
+      if (response.statusCode != 200) {
+        throw ConnectionFaild('Failed to add task');
+      }
+      return ApiResposne(statusCode: response.statusCode, message: response.body);
+    } catch (e) {
       throw ConnectionFaild('Failed to add task');
     }
-
-    return ApiResposne(statusCode: response.statusCode, message: response.body);
   }
 
   @override
   Future<List<TaskModel>> getAllTasks({required int userId}) async {
     final url = Uri.parse('$baseUrl/GetTasks');
 
-    final response = await http.post(
-      url,
-      body: {'userId': '$userId'},
-    );
+    try {
+      final response = await http.post(
+        url,
+        body: {'userId': '$userId'},
+      );
 
-    if (response.statusCode == 200) {
-      final List<dynamic> jsonResponse = jsonDecode(response.body);
-      return jsonResponse.map((task) => TaskModel.fromJson(task)).toList();
-    } else {
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonResponse = jsonDecode(response.body);
+        return jsonResponse.map((task) => TaskModel.fromJson(task)).toList();
+      } else {
+        throw ConnectionFaild('Failed to establish connection');
+      }
+    } catch (e) {
       throw ConnectionFaild('Failed to establish connection');
     }
   }
@@ -52,17 +59,21 @@ class RemoteDatabaseRepositoryImpl implements RemoteDatabaseRepository {
   Future<ApiResposne> updateTaskStatus({required int taskId, required String status}) async {
     final url = Uri.parse('$baseUrl/UpdateTaskStatus');
 
-    final response = await http.put(
-      url,
-      body: {
-        'taskId': '$taskId',
-        'status': status,
-      },
-    );
+    try {
+      final response = await http.put(
+        url,
+        body: {
+          'taskId': '$taskId',
+          'status': status,
+        },
+      );
 
-    if (response.statusCode == 200) {
-      return ApiResposne(statusCode: response.statusCode, message: response.body);
-    } else {
+      if (response.statusCode == 200) {
+        return ApiResposne(statusCode: response.statusCode, message: response.body);
+      } else {
+        throw ConnectionFaild('Failed to establish connection');
+      }
+    } catch (e) {
       throw ConnectionFaild('Failed to establish connection');
     }
   }

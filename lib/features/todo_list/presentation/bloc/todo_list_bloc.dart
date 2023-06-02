@@ -53,9 +53,9 @@ class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
 
       emit(state.copyWith(taskList: tasks, loading: false));
     } on ConnectionFaild {
-      emit(state.copyWith(loading: false, taskOperationStatus: TaskOperationStatus.faild));
-    } finally {
       emit(state.copyWith(taskOperationStatus: TaskOperationStatus.faild));
+    } finally {
+      emit(state.copyWith(loading: false, taskOperationStatus: TaskOperationStatus.none));
     }
   }
 
