@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -74,6 +75,9 @@ class _TodoListViewState extends State<TodoListView> {
                           onPressed: () => context.push('/addNewTask'),
                         ),
                       )
+                        .animate(onPlay: (controller) => controller.repeat(reverse: true, period: const Duration(milliseconds: 2000)))
+                        .shimmer(color: Colors.white24, delay: const Duration(milliseconds: 1000))
+                        .shake()
                     : Container();
               },
             ),

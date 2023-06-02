@@ -81,10 +81,10 @@ class _AddNewTaskViewState extends State<TaskDetailsView> {
                           fieldValues: const ['Pending', 'Active', 'Completed'],
                           text: 'Task status',
                         ),
+                        Gap(20.h),
                         networkState.networkStatus == NetworkStatus.connected
                             ? Column(
                                 children: [
-                                  Gap(20.h),
                                   CustomButtonWidget(
                                     color: blue,
                                     text: 'Update task status',
@@ -96,6 +96,8 @@ class _AddNewTaskViewState extends State<TaskDetailsView> {
                                 ],
                               )
                             : Container(),
+                        Gap(10.h),
+                        CustomButtonWidget(onPressed: () => Navigator.pop(context), text: 'Close', color: black)
                       ],
                     ),
                   );
