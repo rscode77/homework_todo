@@ -21,9 +21,8 @@ class UserRepositoryImpl extends UserRepository {
 
       if (response.statusCode == 200) {
         return userFromJson(response.body);
-      } else {
-        throw AuthenticationFaild('Failed to verify user');
       }
+      throw AuthenticationFaild('Failed to verify user');
     } catch (e) {
       throw ConnectionFaild('Failed to establish connection');
     }

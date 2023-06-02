@@ -11,10 +11,11 @@ import 'package:homework_todo/features/user_authentication/presentation/bloc/use
 import 'config/routes.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const MyApp());
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
-  runApp(const MyApp());
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     systemNavigationBarColor: background,
     systemNavigationBarDividerColor: background,

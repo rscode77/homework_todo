@@ -22,21 +22,24 @@ class UserAuthenticationBloc extends Bloc<UserAuthenticationEvent, UserAuthentic
   _registerUserEvent(RegisterUserEvent event, Emitter<UserAuthenticationState> emit) async {
     try {
       emit(state.copyWith(registrationStatus: RegistrationStatus.registering));
+      await Future.delayed(const Duration(seconds: 1));
       var result = await UserRepositoryImpl().addNewUser(name: event.login, password: event.password);
       if (result.statusCode == 200) {
         add(const VerifyUserEvent());
       }
     } on UserExists {
-      emit(state.copyWith(authenticationStatus: AuthenticationStatus.userExists));
+      emit(state.copyWith(authenticationStatus: AuthenticationStatus.userExists, registrationStatus: RegistrationStatus.none));
     } on ConnectionFaild {
-      emit(state.copyWith(authenticationStatus: AuthenticationStatus.connectionError));
+      emit(state.copyWith(authenticationStatus: AuthenticationStatus.connectionError, registrationStatus: RegistrationStatus.none));
     } on CompleteTheData {
-      emit(state.copyWith(authenticationStatus: AuthenticationStatus.completeTheData));
+      emit(state.copyWith(authenticationStatus: AuthenticationStatus.completeTheData, registrationStatus: RegistrationStatus.none));
     } finally {
-      emit(state.copyWith(
-        authenticationStatus: AuthenticationStatus.unAuthenticated,
-        registrationStatus: RegistrationStatus.none,
-      ));
+      emit(
+        state.copyWith(
+          authenticationStatus: AuthenticationStatus.unAuthenticated,
+          registrationStatus: RegistrationStatus.none,
+        ),
+      );
     }
   }
 
@@ -69,12 +72,17 @@ class UserAuthenticationBloc extends Bloc<UserAuthenticationEvent, UserAuthentic
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setInt('userId', user.id!);
 
-      emit(state.copyWith(authenticationStatus: AuthenticationStatus.authenticated));
+      emit(state.copyWith(
+        authenticationStatus: AuthenticationStatus.authenticated,
+        registrationStatus: RegistrationStatus.none,
+      ));
     } on ConnectionFaild {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       int? userId = prefs.getInt('userId');
       if (userId != null) {
         emit(state.copyWith(userId: userId, authenticationStatus: AuthenticationStatus.authenticated));
+      } else {
+        emit(state.copyWith(authenticationStatus: AuthenticationStatus.unAuthenticated));
       }
     } on AuthenticationFaild {
       emit(state.copyWith(authenticationStatus: AuthenticationStatus.unAuthenticated));
