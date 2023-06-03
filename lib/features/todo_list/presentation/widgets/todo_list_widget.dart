@@ -18,9 +18,13 @@ class TodoListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TodoListBloc, TodoListState>(
-      builder: (context, state) {
-        var filteredTasks = getTaskList(state.taskList, state.filter, state.selectedDate);
-        return state.loading
+      builder: (context, taskListState) {
+        var filteredTasks = getTaskList(
+          taskListState.taskList,
+          taskListState.filter,
+          taskListState.selectedDate,
+        );
+        return taskListState.loading
             ? Center(
                 child: SizedBox(
                 height: 45,
@@ -76,12 +80,13 @@ class TodoListWidget extends StatelessWidget {
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           SizedBox(
-                                            width: 150.w,
+                                            width: 230.w,
                                             child: Text(
                                               filteredTasks[index].title,
                                               overflow: TextOverflow.ellipsis,
                                               style: Theme.of(context).textTheme.headlineLarge!.copyWith(
                                                   color: black,
+                                                  fontWeight: FontWeight.normal,
                                                   decoration: filteredTasks[index].status == 'completed' ? TextDecoration.lineThrough : null,
                                                   decorationThickness: 1),
                                             ),
@@ -95,7 +100,7 @@ class TodoListWidget extends StatelessWidget {
                                         child: Text(
                                           filteredTasks[index].description,
                                           overflow: TextOverflow.ellipsis,
-                                          style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                          style: Theme.of(context).textTheme.bodySmall!.copyWith(
                                               color: textGray,
                                               decoration: filteredTasks[index].status == 'completed' ? TextDecoration.lineThrough : null,
                                               decorationThickness: 1,
@@ -114,7 +119,7 @@ class TodoListWidget extends StatelessWidget {
                                       Flexible(
                                         child: Text(
                                           taskStatus(filteredTasks, index),
-                                          style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: black),
+                                          style: Theme.of(context).textTheme.bodySmall!.copyWith(color: black),
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),

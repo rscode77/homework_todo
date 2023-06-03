@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:homework_todo/config/enums.dart';
@@ -22,7 +21,9 @@ class UserAuthenticationBloc extends Bloc<UserAuthenticationEvent, UserAuthentic
   _registerUserEvent(RegisterUserEvent event, Emitter<UserAuthenticationState> emit) async {
     try {
       emit(state.copyWith(registrationStatus: RegistrationStatus.registering));
+
       var result = await UserRepositoryImpl().addNewUser(name: event.login, password: event.password);
+
       if (result.statusCode == 200) {
         add(const VerifyUserEvent());
       }
@@ -62,8 +63,8 @@ class UserAuthenticationBloc extends Bloc<UserAuthenticationEvent, UserAuthentic
 
   _verifyUserEvent(VerifyUserEvent event, Emitter<UserAuthenticationState> emit) async {
     try {
-      await Future.delayed(const Duration(seconds: 1));
       var user = await UserRepositoryImpl().verifyUser();
+
       emit(state.copyWith(userId: user.id));
 
       final SharedPreferences prefs = await SharedPreferences.getInstance();

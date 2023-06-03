@@ -38,88 +38,103 @@ class _UserRegistrationViewState extends State<UserRegistrationView> {
   }
 
   @override
+  void dispose() {
+    loginController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: background,
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: BlocListener<UserAuthenticationBloc, UserAuthenticationState>(
-            listener: (context, state) {
-              if (state.authenticationStatus == AuthenticationStatus.authenticated) {
-                context.go('/todoList');
-              }
-              if (state.authenticationStatus == AuthenticationStatus.connectionError) {
-                scaffoldMessenger(context: context, message: 'Failed to connect to the server');
-              }
-              if (state.authenticationStatus == AuthenticationStatus.userExists) {
-                scaffoldMessenger(context: context, message: 'User with this name already exists');
-              }
-            },
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height,
-              child: Stack(
-                children: [
-                  bgImage,
-                  Container(
-                    height: MediaQuery.of(context).size.height / 1.1,
-                    margin: EdgeInsets.symmetric(
-                      horizontal: 30.w,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+      body: CustomScrollView(
+        scrollDirection: Axis.vertical,
+        slivers: [
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: SafeArea(
+              child: BlocListener<UserAuthenticationBloc, UserAuthenticationState>(
+                listener: (context, state) {
+                  if (state.authenticationStatus == AuthenticationStatus.authenticated) {
+                    context.go('/todoList');
+                  }
+                  if (state.authenticationStatus == AuthenticationStatus.connectionError) {
+                    scaffoldMessenger(context: context, message: 'Failed to connect to the server');
+                  }
+                  if (state.authenticationStatus == AuthenticationStatus.userExists) {
+                    scaffoldMessenger(context: context, message: 'User with this name already exists');
+                  }
+                },
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    bgImage,
+                    Column(
                       children: [
-                        Gap(30.h),
-                        Text(
-                          'Register new user',
-                          style: Theme.of(context).textTheme.displayLarge!.copyWith(color: black),
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width / 1.1,
-                          child: Text(
-                            'New user will be added to the primary group, the administrator will assign you to the correct department.',
-                            style: Theme.of(context).textTheme.displayMedium!.copyWith(color: textGray, fontSize: 13.sp),
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                            horizontal: 30.w,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Gap(30.h),
+                              Text(
+                                'Register new user',
+                                style: Theme.of(context).textTheme.displayLarge!.copyWith(color: black),
+                              ),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width / 1.1,
+                                child: Text(
+                                  'New user will be added to the primary group, the administrator will assign you to the correct department.',
+                                  style: Theme.of(context).textTheme.displayMedium!.copyWith(color: textGray, fontSize: 13.sp),
+                                ),
+                              ),
+                              Gap(25.h),
+                              Padding(
+                                padding: EdgeInsets.only(left: 5.w),
+                                child: Text(
+                                  'Registration panel',
+                                  style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 16.sp),
+                                ),
+                              ),
+                              Gap(10.h),
+                              CustomTextField(
+                                textController: loginController,
+                                obscureText: false,
+                                hint: 'type login',
+                              ),
+                              Gap(10.h),
+                              CustomTextField(
+                                textController: passwordController,
+                                obscureText: true,
+                                hint: 'type password',
+                              ),
+                              Gap(20.h),
+                              CustomButtonWidget(
+                                text: 'Create account',
+                                color: blue,
+                                onPressed: () => context.read<UserAuthenticationBloc>().add(RegisterUserEvent(
+                                      login: loginController.text,
+                                      password: passwordController.text,
+                                    )),
+                              ),
+                              Gap(10.h),
+                              CustomButtonWidget(onPressed: () => Navigator.pop(context), text: 'Back', color: black),
+                              Gap(40.h),
+                            ],
                           ),
                         ),
-                        Gap(25.h),
-                        Padding(
-                          padding: EdgeInsets.only(left: 5.w),
-                          child: Text(
-                            'Registration panel',
-                            style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 16.sp),
-                          ),
-                        ),
-                        Gap(10.h),
-                        CustomTextField(
-                          textController: loginController,
-                          obscureText: false,
-                          hint: 'type login',
-                        ),
-                        Gap(10.h),
-                        CustomTextField(
-                          textController: passwordController,
-                          obscureText: true,
-                          hint: 'type password',
-                        ),
-                        Gap(20.h),
-                        CustomButtonWidget(
-                          text: 'Create account',
-                          color: blue,
-                          onPressed: () => context.read<UserAuthenticationBloc>().add(RegisterUserEvent(
-                                login: loginController.text,
-                                password: passwordController.text,
-                              )),
-                        ),
-                        Gap(10.h),
-                        CustomButtonWidget(onPressed: () => Navigator.pop(context), text: 'Back', color: black),
                       ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -129,14 +144,14 @@ class _UserRegistrationViewState extends State<UserRegistrationView> {
       backgroundColor: red,
       behavior: SnackBarBehavior.floating,
       content: Container(
-        margin: EdgeInsets.symmetric(vertical: 5.h), // Set custom margin
+        margin: EdgeInsets.symmetric(vertical: 5.h),
         child: Text(
           message,
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: white),
         ),
       ),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20), // Set custom border radius
+        borderRadius: BorderRadius.circular(20),
       ),
       duration: const Duration(seconds: 1),
     ));

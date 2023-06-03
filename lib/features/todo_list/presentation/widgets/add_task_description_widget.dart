@@ -49,7 +49,7 @@ class _AddTaskDescriptionWidgetState extends State<AddTaskDescriptionWidget> {
         ),
         Gap(10.h),
         Container(
-          height: 80.h,
+          height: 95.h,
           padding: EdgeInsets.symmetric(horizontal: 20.w),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),

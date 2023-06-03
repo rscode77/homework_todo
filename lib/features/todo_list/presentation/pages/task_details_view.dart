@@ -32,9 +32,17 @@ class _AddNewTaskViewState extends State<TaskDetailsView> {
   TextEditingController taskStatusController = TextEditingController();
 
   @override
+  void dispose() {
+    taskTitleController.dispose();
+    taskDescriptionController.dispose();
+    taskStatusController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: MediaQuery.of(context).size.width / 1,
+      width: double.infinity,
       child: AlertDialog(
         insetPadding: EdgeInsets.zero,
         elevation: 100,

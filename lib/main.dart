@@ -11,10 +11,10 @@ import 'package:homework_todo/features/user_authentication/presentation/bloc/use
 import 'config/routes.dart';
 
 void main() {
+  runApp(const MyApp());
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
-  runApp(const MyApp());
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     systemNavigationBarColor: background,
     systemNavigationBarDividerColor: background,
@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
             ),
           ],
           child: MaterialApp.router(
-            title: 'Clean main',
+            title: 'Task Manager',
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
               textSelectionTheme: TextSelectionThemeData(
@@ -60,11 +60,6 @@ class MyApp extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                   color: black,
                 ),
-                displayMedium: GoogleFonts.roboto(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w400,
-                  color: black,
-                ),
                 titleLarge: GoogleFonts.roboto(
                   fontSize: 25.sp,
                   fontWeight: FontWeight.w600,
@@ -75,8 +70,13 @@ class MyApp extends StatelessWidget {
                   fontWeight: FontWeight.w400,
                   color: black,
                 ),
-                titleSmall: GoogleFonts.roboto(
-                  fontSize: 12.sp,
+                displayMedium: GoogleFonts.roboto(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w400,
+                  color: black,
+                ),
+                headlineLarge: GoogleFonts.roboto(
+                  fontSize: 15.sp,
                   fontWeight: FontWeight.w400,
                   color: black,
                 ),
@@ -86,26 +86,6 @@ class MyApp extends StatelessWidget {
                   color: black,
                 ),
                 bodySmall: GoogleFonts.roboto(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w400,
-                  color: black,
-                ),
-                headlineLarge: GoogleFonts.roboto(
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.w400,
-                  color: black,
-                ),
-                headlineMedium: GoogleFonts.roboto(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w400,
-                  color: black,
-                ),
-                headlineSmall: GoogleFonts.roboto(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w400,
-                  color: black,
-                ),
-                displaySmall: GoogleFonts.roboto(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w400,
                   color: black,

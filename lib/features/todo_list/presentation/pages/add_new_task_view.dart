@@ -29,6 +29,14 @@ class _AddNewTaskViewState extends State<AddNewTaskView> {
   TextEditingController dateController = TextEditingController();
 
   @override
+  void dispose() {
+    taskTitleController.dispose();
+    taskDescriptionController.dispose();
+    taskPrivacyController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
