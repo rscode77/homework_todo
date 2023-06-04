@@ -7,6 +7,7 @@ import 'package:homework_todo/features/todo_list/presentation/pages/task_details
 import 'package:homework_todo/features/todo_list/presentation/widgets/shadow_line_widget.dart';
 
 import '../../../../config/enums.dart';
+import '../../../shared/widgets/custom_progress_indicator.dart';
 import '../../data/models/task_model.dart';
 import '../bloc/todo_list_bloc.dart';
 
@@ -19,21 +20,16 @@ class TodoListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<TodoListBloc, TodoListState>(
       builder: (context, taskListState) {
-        var filteredTasks = getTaskList(
+        List<TaskModel> filteredTasks = getTaskList(
           taskListState.taskList,
-          taskListState.filter,
+          taskListState.selectedFilter,
           taskListState.selectedDate,
         );
-        return taskListState.loading
-            ? Center(
-                child: SizedBox(
+        return taskListState.isLoading
+            ? const CustomProgressIndicator(
                 height: 45,
                 width: 45,
-                child: CircularProgressIndicator(
-                  color: blue,
-                  strokeWidth: 3,
-                ),
-              ))
+              )
             : Container(
                 margin: EdgeInsets.symmetric(horizontal: 20.w),
                 child: ListView.builder(
@@ -143,8 +139,8 @@ class TodoListWidget extends StatelessWidget {
   }
 
   String taskStatus(List<TaskModel> filteredTasks, int index) {
-    var group = filteredTasks[index].personal == 'false' ? 'Group' : 'Personal';
-    var status = filteredTasks[index].status;
+    String group = filteredTasks[index].personal == 'false' ? 'Group' : 'Personal';
+    String status = filteredTasks[index].status;
     status = status[0].toUpperCase() + status.substring(1);
     return '$status | $group';
   }

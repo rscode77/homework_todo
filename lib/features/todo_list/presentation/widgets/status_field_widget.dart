@@ -24,7 +24,7 @@ class StatusFieldWidget extends StatelessWidget {
       },
       child: BlocBuilder<TodoListBloc, TodoListState>(
         builder: (context, todoListState) {
-          bool active = isFilterActive(status, todoListState.filter);
+          bool active = isFilterActive(status, todoListState.selectedFilter);
           return Row(
             children: [
               Text(capitalizeFirstLetter(status.toString().split('.').last),

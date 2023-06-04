@@ -6,9 +6,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:homework_todo/config/constants.dart';
 import 'package:homework_todo/features/network_controller/bloc/network_bloc.dart';
 import 'package:homework_todo/features/todo_list/presentation/bloc/todo_list_bloc.dart';
-import 'package:homework_todo/features/user_authentication/presentation/bloc/user_authentication_bloc.dart';
+import 'package:homework_todo/features/user_authentication/presentation/pages/bloc/user_registration/user_registration_bloc.dart';
 
 import 'config/routes.dart';
+import 'features/user_authentication/presentation/pages/bloc/user_authentication/user_authentication_bloc.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,13 +34,16 @@ class MyApp extends StatelessWidget {
         return MultiBlocProvider(
           providers: [
             BlocProvider(
-              create: (context) => UserAuthenticationBloc()..add(const VerifyUserEvent()),
+              create: (context) => NetworkBloc()..add(NetworkObserve()),
             ),
             BlocProvider(
               create: (context) => TodoListBloc(),
             ),
             BlocProvider(
-              create: (context) => NetworkBloc()..add(NetworkObserve()),
+              create: (context) => UserRegistrationBloc(),
+            ),
+            BlocProvider(
+              create: (context) => UserAuthenticationBloc()..add(const VerifyUserEvent()),
             ),
           ],
           child: MaterialApp.router(

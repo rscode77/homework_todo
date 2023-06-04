@@ -6,12 +6,10 @@ import '../../../../config/constants.dart';
 import '../../../../config/enums.dart';
 
 class VeryfyingAccountWidget extends StatelessWidget {
-  final int? userId;
   final NetworkStatus networkStatus;
 
   const VeryfyingAccountWidget({
     Key? key,
-    required this.userId,
     required this.networkStatus,
   }) : super(key: key);
 
@@ -42,7 +40,7 @@ class VeryfyingAccountWidget extends StatelessWidget {
         ),
         Gap(40.h),
         Center(
-          child: networkStatus == NetworkStatus.disconnected && userId == null
+          child: networkStatus == NetworkStatus.disconnected
               ? const Icon(
                   Icons.wifi_off_rounded,
                   size: 100,

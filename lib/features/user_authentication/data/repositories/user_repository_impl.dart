@@ -1,5 +1,6 @@
 import 'package:homework_todo/config/exceptions.dart';
 import 'package:homework_todo/features/shared/models/api_response.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:unique_identifier/unique_identifier.dart';
 import 'package:homework_todo/features/user_authentication/data/models/user_model.dart';
@@ -22,10 +23,12 @@ class UserRepositoryImpl extends UserRepository {
       if (response.statusCode == 200) {
         return userFromJson(response.body);
       } else {
-        throw AuthenticationFaild('Failed to verify user');
+        throw AuthenticationError(response.body);
       }
+    } on AuthenticationError catch (e) {
+      throw AuthenticationError(e.message);
     } catch (e) {
-      throw ConnectionFaild('Failed to establish connection');
+      throw AuthenticationError('Failed to establish connection');
     }
   }
 
@@ -33,43 +36,51 @@ class UserRepositoryImpl extends UserRepository {
   Future<UserModel> loginUser({required String name, required String password}) async {
     final url = Uri.parse('$baseUrl/LoginUser');
 
-    final response = await http.post(
-      url,
-      body: {'name': name, 'password': password},
-    );
+    try {
+      if (name == '' && password == '') {
+        throw AuthenticationError('Complete the data');
+      }
 
-    if (name == '' && password == '') {
-      throw CompleteTheData('Complete the data');
-    }
+      final response = await http.post(
+        url,
+        body: {'name': name, 'password': password},
+      );
 
-    if (response.statusCode == 200) {
-      return userFromJson(response.body);
-    } else {
-      throw AuthenticationFaild('Failed to verify user');
+      if (response.statusCode == 200) {
+        return userFromJson(response.body);
+      } else {
+        throw AuthenticationError(response.body);
+      }
+    } on AuthenticationError catch (e) {
+      throw AuthenticationError(e.message);
+    } catch (e) {
+      throw AuthenticationError('Failed to establish connection');
     }
   }
 
   @override
   Future<ApiResposne> addNewUser({required String name, required String password}) async {
     final url = Uri.parse('$baseUrl/AddNewUser');
-    final response = await http.post(
-      url,
-      body: {'name': name, 'password': password, 'uniqueId': await uuid()},
-    );
 
-    if (name == '' && password == '') {
-      throw CompleteTheData('Complete the data');
-    }
-
-    if (response.statusCode == 200) {
-      return ApiResposne(
-        message: response.body,
-        statusCode: response.statusCode,
+    try {
+      final response = await http.post(
+        url,
+        body: {'name': name, 'password': password, 'uniqueId': await uuid()},
       );
-    } else if (response.statusCode == 469) {
-      throw UserExists('Username exists in database');
-    } else {
-      throw ConnectionFaild('Failed to establish connection');
+
+      if (name.isEmpty && password.isEmpty) {
+        throw RegistrationError('Complete the data');
+      }
+
+      if (response.statusCode == 200) {
+        return ApiResposne(statusCode: response.statusCode, message: response.body);
+      } else {
+        throw RegistrationError(response.body);
+      }
+    } on RegistrationError catch (e) {
+      throw RegistrationError(e.message);
+    } catch (e) {
+      throw RegistrationError('Failed to establish connection');
     }
   }
 }
