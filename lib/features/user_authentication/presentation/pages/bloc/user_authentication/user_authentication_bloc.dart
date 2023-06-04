@@ -28,6 +28,7 @@ class UserAuthenticationBloc extends Bloc<UserAuthenticationEvent, UserAuthentic
       emit(UserAuthenticationSuccess(userId: user.id!));
     } on AuthenticationError catch (e) {
       emit(UserAuthenticationError(authenticationError: e.message));
+    } finally {
       emit(UserUnauthenticated());
     }
   }
@@ -52,6 +53,9 @@ class UserAuthenticationBloc extends Bloc<UserAuthenticationEvent, UserAuthentic
       }
     } on UserAuthenticationError catch (e) {
       emit(UserAuthenticationError(authenticationError: e.authenticationError));
+    } finally {
+      await Future.delayed(Duration.zero);
+      emit(UserUnauthenticated());
     }
   }
 }
