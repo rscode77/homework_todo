@@ -1,19 +1,19 @@
-class UserExists implements Exception {
-  String cause;
-  UserExists(this.cause);
+class AuthenticationError implements Exception {
+  final String message;
+  AuthenticationError(this.message);
 }
 
-class AuthenticationFaild implements Exception {
-  String cause;
-  AuthenticationFaild(this.cause);
+class ConnectionError implements Exception {
+  String message;
+  ConnectionError(this.message);
 }
 
-class ConnectionFaild implements Exception {
-  String cause;
-  ConnectionFaild(this.cause);
+class TaskListError implements Exception {
+  String message;
+  TaskListError(this.message);
 }
 
-class CompleteTheData implements Exception {
-  String cause;
-  CompleteTheData(this.cause);
+class RegistrationError implements Exception {
+  String message;
+  RegistrationError(this.message);
 }

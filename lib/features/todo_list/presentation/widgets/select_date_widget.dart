@@ -97,12 +97,26 @@ class _SelectDateWidgetState extends State<SelectDateWidget> {
 
   _selectDate(context) async {
     final DateTime? picked = await showDatePicker(
+        builder: (context, child) {
+          return Theme(
+            data: Theme.of(context).copyWith(
+              colorScheme: ColorScheme.light(
+                primary: blue,
+              ),
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                  foregroundColor: blue,
+                ),
+              ),
+            ),
+            child: child!,
+          );
+        },
         context: context,
-        initialDate: DateTime.now(),
-        initialDatePickerMode: DatePickerMode.day,
         firstDate: DateTime.now(),
         useRootNavigator: false,
-        lastDate: DateTime(DateTime.now().year + 1));
+        lastDate: DateTime(DateTime.now().year + 1),
+        initialDate: DateTime.now());
 
     if (picked != null) {
       setState(() {

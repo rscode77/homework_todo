@@ -8,7 +8,10 @@ part 'network_event.dart';
 part 'network_state.dart';
 
 class NetworkBloc extends Bloc<NetworkEvent, NetworkState> {
-  NetworkBloc._() : super(const NetworkState(networkStatus: NetworkStatus.disconnected)) {
+  static final NetworkBloc _instance = NetworkBloc._();
+  factory NetworkBloc() => _instance;
+
+  NetworkBloc._() : super(const NetworkState(networkStatus: NetworkStatus.connected)) {
     on<NetworkObserve>((event, emit) {
       NetworkHelper.observeNetwork();
     });
@@ -20,7 +23,4 @@ class NetworkBloc extends Bloc<NetworkEvent, NetworkState> {
             ));
     });
   }
-
-  static final NetworkBloc _instance = NetworkBloc._();
-  factory NetworkBloc() => _instance;
 }

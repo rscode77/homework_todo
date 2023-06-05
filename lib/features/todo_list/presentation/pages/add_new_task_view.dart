@@ -5,12 +5,12 @@ import 'package:gap/gap.dart';
 import 'package:homework_todo/features/todo_list/presentation/bloc/todo_list_bloc.dart';
 import 'package:homework_todo/features/todo_list/presentation/widgets/add_task_title_widget.dart';
 import 'package:homework_todo/features/todo_list/presentation/widgets/select_date_widget.dart';
-import 'package:homework_todo/features/user_authentication/presentation/bloc/user_authentication_bloc.dart';
 import 'package:intl/intl.dart';
 
 import 'package:homework_todo/features/todo_list/presentation/widgets/set_privacy_widget.dart';
 
 import '../../../../config/constants.dart';
+import '../../../user_authentication/presentation/pages/bloc/user_authentication/user_authentication_bloc.dart';
 import '../../data/models/task_model.dart';
 import '../widgets/add_task_description_widget.dart';
 import '../../../shared/widgets/custom_buitton_widget.dart';
@@ -27,6 +27,15 @@ class _AddNewTaskViewState extends State<AddNewTaskView> {
   TextEditingController taskDescriptionController = TextEditingController();
   TextEditingController taskPrivacyController = TextEditingController();
   TextEditingController dateController = TextEditingController();
+
+  @override
+  void dispose() {
+    taskTitleController.dispose();
+    taskDescriptionController.dispose();
+    taskPrivacyController.dispose();
+    dateController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,18 +101,22 @@ class _AddNewTaskViewState extends State<AddNewTaskView> {
     String formattedDate = DateFormat('y-MM-dd').format(date);
 
     if (taskTitleController.text.isEmpty || taskDescriptionController.text.isEmpty) return;
-    context.read<TodoListBloc>().add(
-          AddNewTaskEvent(
-              task: TaskModel(
-            id: 0,
-            title: taskTitleController.text,
-            description: taskDescriptionController.text,
-            date: formattedDate,
-            personal: taskPrivacyController.text == 'Personal' ? 'true' : 'false',
-            status: 'pending',
-            userId: context.read<UserAuthenticationBloc>().state.userId!,
-          )),
-        );
-    Navigator.pop(context);
+
+    var userAuthenticationState = context.read<UserAuthenticationBloc>().state;
+    if (userAuthenticationState is UserAuthenticationSuccess) {
+      context.read<TodoListBloc>().add(
+            AddNewTaskEvent(
+                task: TaskModel(
+              id: 0,
+              title: taskTitleController.text,
+              description: taskDescriptionController.text,
+              date: formattedDate,
+              personal: taskPrivacyController.text == 'Personal' ? 'true' : 'false',
+              status: 'pending',
+              userId: userAuthenticationState.userId,
+            )),
+          );
+      Navigator.pop(context);
+    }
   }
 }

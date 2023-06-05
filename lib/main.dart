@@ -6,12 +6,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:homework_todo/config/constants.dart';
 import 'package:homework_todo/features/network_controller/bloc/network_bloc.dart';
 import 'package:homework_todo/features/todo_list/presentation/bloc/todo_list_bloc.dart';
-import 'package:homework_todo/features/user_authentication/presentation/bloc/user_authentication_bloc.dart';
+import 'package:homework_todo/features/user_authentication/presentation/pages/bloc/user_registration/user_registration_bloc.dart';
 
 import 'config/routes.dart';
+import 'features/user_authentication/presentation/pages/bloc/user_authentication/user_authentication_bloc.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -34,17 +34,20 @@ class MyApp extends StatelessWidget {
         return MultiBlocProvider(
           providers: [
             BlocProvider(
-              create: (context) => UserAuthenticationBloc()..add(const VerifyUserEvent()),
+              create: (context) => NetworkBloc()..add(NetworkObserve()),
             ),
             BlocProvider(
               create: (context) => TodoListBloc(),
             ),
             BlocProvider(
-              create: (context) => NetworkBloc()..add(NetworkObserve()),
+              create: (context) => UserRegistrationBloc(),
+            ),
+            BlocProvider(
+              create: (context) => UserAuthenticationBloc()..add(const VerifyUserEvent()),
             ),
           ],
           child: MaterialApp.router(
-            title: 'Clean main',
+            title: 'Task Manager',
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
               textSelectionTheme: TextSelectionThemeData(
@@ -61,11 +64,6 @@ class MyApp extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                   color: black,
                 ),
-                displayMedium: GoogleFonts.roboto(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w400,
-                  color: black,
-                ),
                 titleLarge: GoogleFonts.roboto(
                   fontSize: 25.sp,
                   fontWeight: FontWeight.w600,
@@ -76,8 +74,13 @@ class MyApp extends StatelessWidget {
                   fontWeight: FontWeight.w400,
                   color: black,
                 ),
-                titleSmall: GoogleFonts.roboto(
-                  fontSize: 12.sp,
+                displayMedium: GoogleFonts.roboto(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w400,
+                  color: black,
+                ),
+                headlineLarge: GoogleFonts.roboto(
+                  fontSize: 15.sp,
                   fontWeight: FontWeight.w400,
                   color: black,
                 ),
@@ -87,26 +90,6 @@ class MyApp extends StatelessWidget {
                   color: black,
                 ),
                 bodySmall: GoogleFonts.roboto(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w400,
-                  color: black,
-                ),
-                headlineLarge: GoogleFonts.roboto(
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.w400,
-                  color: black,
-                ),
-                headlineMedium: GoogleFonts.roboto(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w400,
-                  color: black,
-                ),
-                headlineSmall: GoogleFonts.roboto(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w400,
-                  color: black,
-                ),
-                displaySmall: GoogleFonts.roboto(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w400,
                   color: black,

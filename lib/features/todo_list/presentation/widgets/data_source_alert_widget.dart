@@ -6,18 +6,14 @@ import 'package:homework_todo/features/shared/widgets/custom_buitton_widget.dart
 import 'package:homework_todo/features/todo_list/presentation/bloc/todo_list_bloc.dart';
 
 import '../../../../config/constants.dart';
+
 import '../../../../config/enums.dart';
 import '../../../network_controller/bloc/network_bloc.dart';
-import '../../../user_authentication/presentation/bloc/user_authentication_bloc.dart';
+import '../../../user_authentication/presentation/pages/bloc/user_authentication/user_authentication_bloc.dart';
 
-class DataSourceAlertWidget extends StatefulWidget {
-  const DataSourceAlertWidget({super.key});
+class DataSourceAlertWidget extends StatelessWidget {
+  const DataSourceAlertWidget({Key? key}) : super(key: key);
 
-  @override
-  State<DataSourceAlertWidget> createState() => _DataSourceAlertWidget();
-}
-
-class _DataSourceAlertWidget extends State<DataSourceAlertWidget> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -58,27 +54,36 @@ class _DataSourceAlertWidget extends State<DataSourceAlertWidget> {
                 ),
                 Gap(30.h),
                 BlocBuilder<NetworkBloc, NetworkState>(
-                  builder: (context, state) {
-                    return CustomButtonWidget(
-                        onPressed: () {
-                          if (state.networkStatus == NetworkStatus.connected) {
-                            var userId = context.read<UserAuthenticationBloc>().state.userId;
-                            context.read<TodoListBloc>().add(LoadRemoteTodoListEvent(userId: userId!));
-                            Navigator.pop(context);
-                          }
-                        },
-                        text: 'Try again',
-                        color: blue);
+                  builder: (context, networkState) {
+                    return BlocBuilder<UserAuthenticationBloc, UserAuthenticationState>(
+                      builder: (context, authenticationState) {
+                        return Column(
+                          children: [
+                            CustomButtonWidget(
+                              onPressed: () {
+                                if (networkState.networkStatus == NetworkStatus.connected && authenticationState is UserAuthenticationSuccess) {
+                                  context.read<TodoListBloc>().add(LoadRemoteTodoListEvent(userId: authenticationState.userId));
+                                  Navigator.pop(context);
+                                }
+                              },
+                              text: 'Try again',
+                              color: blue,
+                            ),
+                            Gap(10.h),
+                            CustomButtonWidget(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                context.read<TodoListBloc>().add(LoadLocalTodoListEvent());
+                              },
+                              text: 'Load local data',
+                              color: black,
+                            ),
+                          ],
+                        );
+                      },
+                    );
                   },
                 ),
-                Gap(10.h),
-                CustomButtonWidget(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      context.read<TodoListBloc>().add(LoadLocalTodoListEvent());
-                    },
-                    text: 'Load local data',
-                    color: black),
               ],
             ),
           ),

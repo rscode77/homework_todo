@@ -26,11 +26,13 @@ class RemoteDatabaseRepositoryImpl implements RemoteDatabaseRepository {
       );
 
       if (response.statusCode != 200) {
-        throw ConnectionFaild('Failed to add task');
+        throw TaskListError(response.body);
       }
       return ApiResposne(statusCode: response.statusCode, message: response.body);
+    } on TaskListError catch (e) {
+      throw TaskListError(e.message);
     } catch (e) {
-      throw ConnectionFaild('Failed to add task');
+      throw TaskListError('Failed to establish connection');
     }
   }
 
@@ -48,10 +50,12 @@ class RemoteDatabaseRepositoryImpl implements RemoteDatabaseRepository {
         final List<dynamic> jsonResponse = jsonDecode(response.body);
         return jsonResponse.map((task) => TaskModel.fromJson(task)).toList();
       } else {
-        throw ConnectionFaild('Failed to establish connection');
+        throw TaskListError(response.body);
       }
+    } on ConnectionError catch (e) {
+      throw ConnectionError(e.message);
     } catch (e) {
-      throw ConnectionFaild('Failed to establish connection');
+      throw TaskListError('Failed to establish connection');
     }
   }
 
@@ -71,10 +75,12 @@ class RemoteDatabaseRepositoryImpl implements RemoteDatabaseRepository {
       if (response.statusCode == 200) {
         return ApiResposne(statusCode: response.statusCode, message: response.body);
       } else {
-        throw ConnectionFaild('Failed to establish connection');
+        throw ConnectionError(response.body);
       }
+    } on ConnectionError catch (e) {
+      throw ConnectionError(e.message);
     } catch (e) {
-      throw ConnectionFaild('Failed to establish connection');
+      throw TaskListError('Failed to establish connection');
     }
   }
 }

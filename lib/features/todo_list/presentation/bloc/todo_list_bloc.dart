@@ -17,17 +17,7 @@ part 'todo_list_state.dart';
 
 class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
   TodoListBloc()
-      : super(TodoListState(
-            taskList: const [],
-            selectedDate: DateTime(
-              DateTime.now().year,
-              DateTime.now().month,
-              DateTime.now().day,
-            ),
-            filter: TaskStatus.all,
-            loading: false,
-            tasksInCalendar: const [],
-            taskOperationStatus: TaskOperationStatus.none)) {
+      : super(TodoListState(selectedDate: DateTime.now(), selectedFilter: TaskStatus.all, taskList: const [], isLoading: false, errorMessage: null)) {
     on<LoadRemoteTodoListEvent>(_loadRemoteTaskList);
     on<LoadLocalTodoListEvent>(_loadLocalTaskList);
     on<ChangeCalendarDateEvent>(_changeCalendarDate);
@@ -37,7 +27,7 @@ class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
   }
 
   _loadRemoteTaskList(LoadRemoteTodoListEvent event, Emitter<TodoListState> emit) async {
-    emit(state.copyWith(loading: true));
+    emit(state.copyWith(isLoading: true));
 
     await Future.delayed(const Duration(seconds: 1));
 
@@ -51,31 +41,12 @@ class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
         await DatabaseHelper().insertTask(task);
       }
 
-      emit(state.copyWith(taskList: tasks, loading: false));
-    } on ConnectionFaild {
-      emit(state.copyWith(taskOperationStatus: TaskOperationStatus.faild));
+      emit(state.copyWith(taskList: tasks, isLoading: false));
+    } on TaskListError catch (e) {
+      emit(state.copyWith(errorMessage: e.message));
     } finally {
-      emit(state.copyWith(loading: false, taskOperationStatus: TaskOperationStatus.none));
+      emit(state.copyWith(errorMessage: null, isLoading: false));
     }
-  }
-
-  _loadLocalTaskList(LoadLocalTodoListEvent event, Emitter<TodoListState> emit) async {
-    emit(state.copyWith(loading: true));
-
-    await Future.delayed(const Duration(seconds: 1));
-
-    await DatabaseHelper().initDatabase();
-    var tasks = await LocalDatabaseRepositoryImpl().getAllTasks();
-
-    emit(state.copyWith(taskList: tasks, loading: false));
-  }
-
-  _changeCalendarDate(ChangeCalendarDateEvent event, Emitter<TodoListState> emit) {
-    emit(state.copyWith(selectedDate: DateTime(event.selectedDate.year, event.selectedDate.month, event.selectedDate.day)));
-  }
-
-  _changeTaskFilter(ChangeTaskFilterEvent event, Emitter<TodoListState> emit) {
-    emit(state.copyWith(filter: event.filter));
   }
 
   _addNewTask(AddNewTaskEvent event, Emitter<TodoListState> emit) async {
@@ -86,10 +57,10 @@ class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       int? userId = prefs.getInt('userId');
       add(LoadRemoteTodoListEvent(userId: userId!));
-    } on ConnectionFaild {
-      emit(state.copyWith(taskOperationStatus: TaskOperationStatus.faild));
+    } on TaskListError catch (e) {
+      emit(state.copyWith(errorMessage: e.message));
     } finally {
-      emit(state.copyWith(taskOperationStatus: TaskOperationStatus.none));
+      emit(state.copyWith(errorMessage: null));
     }
   }
 
@@ -103,10 +74,29 @@ class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
 
       emit(state.copyWith(taskList: []));
       emit(state.copyWith(taskList: tasks));
-    } on ConnectionFaild {
-      emit(state.copyWith(taskOperationStatus: TaskOperationStatus.faild));
+    } on TaskListError catch (e) {
+      emit(state.copyWith(errorMessage: e.message));
     } finally {
-      emit(state.copyWith(taskOperationStatus: TaskOperationStatus.none));
+      emit(state.copyWith(errorMessage: null));
     }
+  }
+
+  _loadLocalTaskList(LoadLocalTodoListEvent event, Emitter<TodoListState> emit) async {
+    emit(state.copyWith(isLoading: true));
+
+    await Future.delayed(const Duration(seconds: 1));
+
+    await DatabaseHelper().initDatabase();
+    var tasks = await LocalDatabaseRepositoryImpl().getAllTasks();
+
+    emit(state.copyWith(taskList: tasks, isLoading: false));
+  }
+
+  _changeCalendarDate(ChangeCalendarDateEvent event, Emitter<TodoListState> emit) {
+    emit(state.copyWith(selectedDate: DateTime(event.selectedDate.year, event.selectedDate.month, event.selectedDate.day)));
+  }
+
+  _changeTaskFilter(ChangeTaskFilterEvent event, Emitter<TodoListState> emit) {
+    emit(state.copyWith(selectedFilter: event.filter));
   }
 }

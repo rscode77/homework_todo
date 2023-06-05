@@ -7,6 +7,7 @@ import 'package:homework_todo/features/todo_list/presentation/pages/task_details
 import 'package:homework_todo/features/todo_list/presentation/widgets/shadow_line_widget.dart';
 
 import '../../../../config/enums.dart';
+import '../../../shared/widgets/custom_progress_indicator.dart';
 import '../../data/models/task_model.dart';
 import '../bloc/todo_list_bloc.dart';
 
@@ -18,18 +19,17 @@ class TodoListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TodoListBloc, TodoListState>(
-      builder: (context, state) {
-        var filteredTasks = getTaskList(state.taskList, state.filter, state.selectedDate);
-        return state.loading
-            ? Center(
-                child: SizedBox(
+      builder: (context, taskListState) {
+        List<TaskModel> filteredTasks = getTaskList(
+          taskListState.taskList,
+          taskListState.selectedFilter,
+          taskListState.selectedDate,
+        );
+        return taskListState.isLoading
+            ? const CustomProgressIndicator(
                 height: 45,
                 width: 45,
-                child: CircularProgressIndicator(
-                  color: blue,
-                  strokeWidth: 3,
-                ),
-              ))
+              )
             : Container(
                 margin: EdgeInsets.symmetric(horizontal: 20.w),
                 child: ListView.builder(
@@ -76,12 +76,13 @@ class TodoListWidget extends StatelessWidget {
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           SizedBox(
-                                            width: 150.w,
+                                            width: 230.w,
                                             child: Text(
                                               filteredTasks[index].title,
                                               overflow: TextOverflow.ellipsis,
                                               style: Theme.of(context).textTheme.headlineLarge!.copyWith(
                                                   color: black,
+                                                  fontWeight: FontWeight.normal,
                                                   decoration: filteredTasks[index].status == 'completed' ? TextDecoration.lineThrough : null,
                                                   decorationThickness: 1),
                                             ),
@@ -95,7 +96,7 @@ class TodoListWidget extends StatelessWidget {
                                         child: Text(
                                           filteredTasks[index].description,
                                           overflow: TextOverflow.ellipsis,
-                                          style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                          style: Theme.of(context).textTheme.bodySmall!.copyWith(
                                               color: textGray,
                                               decoration: filteredTasks[index].status == 'completed' ? TextDecoration.lineThrough : null,
                                               decorationThickness: 1,
@@ -114,7 +115,7 @@ class TodoListWidget extends StatelessWidget {
                                       Flexible(
                                         child: Text(
                                           taskStatus(filteredTasks, index),
-                                          style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: black),
+                                          style: Theme.of(context).textTheme.bodySmall!.copyWith(color: black),
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
@@ -138,8 +139,8 @@ class TodoListWidget extends StatelessWidget {
   }
 
   String taskStatus(List<TaskModel> filteredTasks, int index) {
-    var group = filteredTasks[index].personal == 'false' ? 'Group' : 'Personal';
-    var status = filteredTasks[index].status;
+    String group = filteredTasks[index].personal == 'false' ? 'Group' : 'Personal';
+    String status = filteredTasks[index].status;
     status = status[0].toUpperCase() + status.substring(1);
     return '$status | $group';
   }

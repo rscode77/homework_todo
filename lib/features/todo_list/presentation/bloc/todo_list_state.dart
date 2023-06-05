@@ -1,41 +1,35 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'todo_list_bloc.dart';
 
 class TodoListState extends Equatable {
+  final bool isLoading;
   final List<TaskModel> taskList;
   final DateTime selectedDate;
-  final TaskStatus filter;
-  final bool loading;
-  final List<TaskModel> tasksInCalendar;
-  final TaskOperationStatus taskOperationStatus;
+  final TaskStatus selectedFilter;
+  final String? errorMessage;
 
   const TodoListState({
     required this.taskList,
     required this.selectedDate,
-    required this.filter,
-    required this.loading,
-    required this.tasksInCalendar,
-    required this.taskOperationStatus,
+    required this.selectedFilter,
+    required this.isLoading,
+    required this.errorMessage,
   });
-
   @override
-  List<Object> get props => [taskList, selectedDate, filter, loading, tasksInCalendar];
+  List<Object?> get props => [taskList, selectedDate, selectedFilter, isLoading, errorMessage];
 
   TodoListState copyWith({
+    bool? isLoading,
     List<TaskModel>? taskList,
     DateTime? selectedDate,
-    TaskStatus? filter,
-    bool? loading,
-    List<TaskModel>? tasksInCalendar,
-    TaskOperationStatus? taskOperationStatus,
+    TaskStatus? selectedFilter,
+    String? errorMessage,
   }) {
     return TodoListState(
-      taskList: taskList ?? this.taskList,
+      isLoading: isLoading ?? this.isLoading,
       selectedDate: selectedDate ?? this.selectedDate,
-      filter: filter ?? this.filter,
-      loading: loading ?? this.loading,
-      tasksInCalendar: tasksInCalendar ?? this.tasksInCalendar,
-      taskOperationStatus: taskOperationStatus ?? this.taskOperationStatus,
+      selectedFilter: selectedFilter ?? this.selectedFilter,
+      taskList: taskList ?? this.taskList,
+      errorMessage: errorMessage,
     );
   }
 }
