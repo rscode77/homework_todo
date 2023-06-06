@@ -17,7 +17,6 @@ class UserModel extends UserEntity {
     required super.id,
     required super.uniqueId,
     required super.name,
-    required super.password,
     required super.groupId,
   });
 
@@ -25,7 +24,6 @@ class UserModel extends UserEntity {
         id: json["id"],
         uniqueId: json["uniqueId"],
         name: json["name"],
-        password: json["password"],
         groupId: json["groupId"],
       );
 
@@ -33,7 +31,6 @@ class UserModel extends UserEntity {
         "id": id,
         "uniqueId": uniqueId,
         "name": name,
-        "password": password,
         "groupId": groupId,
       };
 }

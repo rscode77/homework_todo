@@ -1,11 +1,11 @@
-class AuthenticationError implements Exception {
+class AuthenticationFaild implements Exception {
   final String message;
-  AuthenticationError(this.message);
+  AuthenticationFaild(this.message);
 }
 
-class ConnectionError implements Exception {
+class ConnectionFaild implements Exception {
   String message;
-  ConnectionError(this.message);
+  ConnectionFaild(this.message);
 }
 
 class TaskListError implements Exception {

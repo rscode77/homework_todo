@@ -52,8 +52,8 @@ class RemoteDatabaseRepositoryImpl implements RemoteDatabaseRepository {
       } else {
         throw TaskListError(response.body);
       }
-    } on ConnectionError catch (e) {
-      throw ConnectionError(e.message);
+    } on ConnectionFaild catch (e) {
+      throw ConnectionFaild(e.message);
     } catch (e) {
       throw TaskListError('Failed to establish connection');
     }
@@ -75,10 +75,10 @@ class RemoteDatabaseRepositoryImpl implements RemoteDatabaseRepository {
       if (response.statusCode == 200) {
         return ApiResposne(statusCode: response.statusCode, message: response.body);
       } else {
-        throw ConnectionError(response.body);
+        throw ConnectionFaild(response.body);
       }
-    } on ConnectionError catch (e) {
-      throw ConnectionError(e.message);
+    } on ConnectionFaild catch (e) {
+      throw ConnectionFaild(e.message);
     } catch (e) {
       throw TaskListError('Failed to establish connection');
     }

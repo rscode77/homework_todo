@@ -15,6 +15,7 @@ class UserRegistrationBloc extends Bloc<UserRegistrationEvent, UserRegistrationS
   _registerUserEvent(RegisterUserEvent event, Emitter<UserRegistrationState> emit) async {
     try {
       emit(UserRegistrationAttempt());
+
       await Future.delayed(const Duration(seconds: 1));
 
       await UserRepositoryImpl().addNewUser(name: event.login, password: event.password);

@@ -10,11 +10,6 @@ class LocalDatabaseRepositoryImpl implements LocalDatabaseRepository {
   }
 
   @override
-  Future<void> deleteTask(int id) async {
-    await DatabaseHelper().deleteTask(id);
-  }
-
-  @override
   Future<List<TaskModel>> getAllTasks() async {
     return await DatabaseHelper().getTasks();
   }

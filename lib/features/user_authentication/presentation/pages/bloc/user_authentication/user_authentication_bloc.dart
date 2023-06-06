@@ -26,7 +26,7 @@ class UserAuthenticationBloc extends Bloc<UserAuthenticationEvent, UserAuthentic
       await prefs.setInt('userId', user.id!);
 
       emit(UserAuthenticationSuccess(userId: user.id!));
-    } on AuthenticationError catch (e) {
+    } on AuthenticationFaild catch (e) {
       emit(UserAuthenticationError(authenticationError: e.message));
     } finally {
       emit(UserUnauthenticated());
@@ -45,7 +45,7 @@ class UserAuthenticationBloc extends Bloc<UserAuthenticationEvent, UserAuthentic
       await prefs.setInt('userId', user.id!);
 
       emit(UserAuthenticationSuccess(userId: user.id!));
-    } on AuthenticationError {
+    } on AuthenticationFaild {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       int? userId = prefs.getInt('userId');
       if (userId != null) {

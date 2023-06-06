@@ -26,7 +26,7 @@ class UserRepositoryImpl extends UserRepository {
       }
       throw AuthenticationFaild('Failed to verify user');
     } catch (e) {
-      throw ConnectionFaild('Failed to establish connection');
+      throw AuthenticationFaild('Failed to establish connection');
     }
   }
 
@@ -40,45 +40,19 @@ class UserRepositoryImpl extends UserRepository {
         body: {'name': name, 'password': password},
       );
 
-      if (name == '' && password == '') {
-        throw CompleteTheData('Complete the data');
+      if (name.isEmpty || password.isEmpty) {
+        throw AuthenticationFaild('Complete the data');
       }
 
       if (response.statusCode == 200) {
         return userFromJson(response.body);
       } else {
-        throw AuthenticationError(response.body);
+        throw AuthenticationFaild(response.body);
       }
-    } on AuthenticationError catch (e) {
-      throw AuthenticationError(e.message);
+    } on AuthenticationFaild catch (e) {
+      throw AuthenticationFaild(e.message);
     } catch (e) {
-      throw AuthenticationError('Failed to establish connection');
-    }
-  }
-
-  @override
-  Future<UserModel> loginUser({required String name, required String password}) async {
-    final url = Uri.parse('$baseUrl/LoginUser');
-
-    try {
-      if (name == '' && password == '') {
-        throw AuthenticationError('Complete the data');
-      }
-
-      final response = await http.post(
-        url,
-        body: {'name': name, 'password': password},
-      );
-
-      if (response.statusCode == 200) {
-        return userFromJson(response.body);
-      } else {
-        throw AuthenticationError(response.body);
-      }
-    } on AuthenticationError catch (e) {
-      throw AuthenticationError(e.message);
-    } catch (e) {
-      throw AuthenticationError('Failed to establish connection');
+      throw AuthenticationFaild('Failed to establish connection');
     }
   }
 
@@ -92,7 +66,7 @@ class UserRepositoryImpl extends UserRepository {
         body: {'name': name, 'password': password, 'uniqueId': await uuid()},
       );
 
-      if (name.isEmpty && password.isEmpty) {
+      if (name.isEmpty || password.isEmpty) {
         throw RegistrationError('Complete the data');
       }
 
